@@ -23,6 +23,12 @@ class ControllerBase
   # Set the response's content type to the given type.
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
+    # set content-type header
+    res['Content-Type'] = content_type
+    # append the content to the body of the response and update Content-Length
+    res.write(content)
+    # set variable to prevent to show that content has already been rendered
+    @already_built_response = true
   end
 
   # use ERB and binding to evaluate templates
