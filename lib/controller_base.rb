@@ -13,10 +13,12 @@ class ControllerBase
 
   # Helper method to alias @already_built_response
   def already_built_response?
+    @already_built_response ||= false
   end
 
   # Set the response status code and header
   def redirect_to(url)
+    raise "Double render" if already_built_response?
     # there is a Rack method - #redirect - but they explicitly told us not to use it
     # so this code sets the status for the redirect and the new location
     # then sets @already_built_response so that the controller can't render/redirect twice
@@ -25,11 +27,12 @@ class ControllerBase
     @already_built_response = true
     @res.finish
   end
-
+  
   # Populate the response with content.
   # Set the response's content type to the given type.
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
+    raise "Double render" if already_built_response?
     # set content-type header
     @res.content_type = content_type
     # append the content to the body of the response and update Content-Length
