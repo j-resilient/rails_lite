@@ -17,6 +17,13 @@ class ControllerBase
 
   # Set the response status code and header
   def redirect_to(url)
+    # there is a Rack method - #redirect - but they explicitly told us not to use it
+    # so this code sets the status for the redirect and the new location
+    # then sets @already_built_response so that the controller can't render/redirect twice
+    @res.status = 302
+    @res.location = url
+    @already_built_response = true
+    @res.finish
   end
 
   # Populate the response with content.
@@ -24,11 +31,13 @@ class ControllerBase
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
     # set content-type header
-    res['Content-Type'] = content_type
+    @res['Content-Type'] = content_type
     # append the content to the body of the response and update Content-Length
-    res.write(content)
+    @res.write(content)
     # set variable to prevent to show that content has already been rendered
     @already_built_response = true
+
+    @res.finish
   end
 
   # use ERB and binding to evaluate templates
