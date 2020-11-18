@@ -26,6 +26,8 @@ class ControllerBase
     @res.status = 302
     @res.location = url
     @already_built_response = true
+    # set the cookie
+    @session.store_session(res)
     @res.finish
   end
   
@@ -40,6 +42,8 @@ class ControllerBase
     @res.write(content)
     # set variable to prevent to show that content has already been rendered
     @already_built_response = true
+    # set the cookie
+    @session.store_session(res)
 
     @res.finish
   end
@@ -58,6 +62,7 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    @session ||= Session.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
