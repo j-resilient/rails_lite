@@ -1,6 +1,7 @@
 require 'active_support'
 require 'active_support/core_ext'
 require 'erb'
+require 'active_support/inflector'
 require_relative './session'
 
 class ControllerBase
@@ -46,6 +47,13 @@ class ControllerBase
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
   def render(template_name)
+    # creating the path is supposed to use File.dirname and File.join but
+    # I don't understand how right now. Something to do with flexibility and making a gem
+    # so when errors pop up in making a gem: this is the problem
+    template_path = "views/#{self.class.to_s.underscore}/#{template_name}.html.erb"
+    template_contents = File.read(template_path)
+    view = ERB.new(template_contents).result(binding)
+    render_content(view, "text/html")
   end
 
   # method exposing a `Session` object
