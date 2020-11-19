@@ -10,12 +10,14 @@ class Route
 
   # checks if pattern matches path and method matches request method
   def matches?(req)
-    http_method == req.request.downcase.to_sym && pattern =~ req.path
+    http_method == req.request_method.downcase.to_sym && pattern =~ req.path
   end
 
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
+    controller = controller_class.new(req, res)
+    controller.invoke_action(action_name)
   end
 end
 
@@ -48,11 +50,18 @@ class Router
   def match(req)
     routes.find do |route|
       req.path =~ route.pattern &&
-      req.request.downcase.to_sym == route.http_method
+      req.request_method.downcase.to_sym == route.http_method
     end
   end
 
   # either throw 404 or call run on a matched route
   def run(req, res)
+    route_match = match(req)
+    if route_match
+      route_match.run
+    else
+      res.status = 404
+      res.write("#{req.path} does not exist.")
+    end
   end
 end
