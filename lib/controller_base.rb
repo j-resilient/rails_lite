@@ -66,7 +66,9 @@ class ControllerBase
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
-  def invoke_action(name)
+  def invoke_action(action_name)
+    self.class.send(action_name)
+    render(action_name) unless already_built_response?
   end
 end
 
