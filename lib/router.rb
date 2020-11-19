@@ -62,6 +62,7 @@ class Router
     else
       res.status = 404
       res.write("#{req.path} does not exist.")
+      res.finish
     end
   end
 end
