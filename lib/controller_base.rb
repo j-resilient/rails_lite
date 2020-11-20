@@ -8,7 +8,7 @@ class ControllerBase
   attr_reader :req, :res, :params
 
   # Setup the controller
-  def initialize(req, res, route_params)
+  def initialize(req, res, route_params = {})
     @req, @res = req, res
     @params = req.params.merge(route_params)
   end
@@ -28,7 +28,7 @@ class ControllerBase
     @res.location = url
     @already_built_response = true
     # set the cookie
-    @session.store_session(res)
+    session.store_session(res)
     @res.finish
   end
   
@@ -44,7 +44,7 @@ class ControllerBase
     # set variable to prevent to show that content has already been rendered
     @already_built_response = true
     # set the cookie
-    @session.store_session(res)
+    session.store_session(res)
 
     @res.finish
   end
@@ -68,7 +68,7 @@ class ControllerBase
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(action_name)
-    self.class.send(action_name)
+    self.send(action_name)
     render(action_name) unless already_built_response?
   end
 end
