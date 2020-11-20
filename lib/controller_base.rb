@@ -9,12 +9,14 @@ class ControllerBase
 
   # Setup the controller
   def initialize(req, res, route_params = {})
+    # set req and res as instance variables
     @req, @res = req, res
     @params = req.params.merge(route_params)
   end
 
   # Helper method to alias @already_built_response
   def already_built_response?
+    # set @already_built_response to false unless it's already set to true
     @already_built_response ||= false
   end
 
@@ -26,10 +28,11 @@ class ControllerBase
     # then sets @already_built_response so that the controller can't render/redirect twice
     @res.status = 302
     @res.location = url
-    @already_built_response = true
     # set the cookie
     session.store_session(res)
-    @res.finish
+    # set variable to prevent to show that the response has been built - 
+    # aka the content has already been rendered
+    @already_built_response = true
   end
   
   # Populate the response with content.
@@ -37,16 +40,15 @@ class ControllerBase
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
     raise "Double render" if already_built_response?
-    # set content-type header
+    # set the response's content-type header
     @res.content_type = content_type
     # append the content to the body of the response and update Content-Length
     @res.write(content)
-    # set variable to prevent to show that content has already been rendered
-    @already_built_response = true
     # set the cookie
     session.store_session(res)
-
-    @res.finish
+    # set variable to prevent to show that the response has been built - 
+    # aka the content has already been rendered
+    @already_built_response = true
   end
 
   # use ERB and binding to evaluate templates
