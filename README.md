@@ -19,6 +19,8 @@ Methods
  to #render_content.
 + session returns the session ivariable: if the session object doesn't exist, initializes  
  one and returns that
++ invoke_action(action_name) uses #send to find the given method on the current instance  
+ and call it
 # lib/session.rb
 The Session class handles the session cookie. It deserializes or creates it,  
 updates it, allows hash-like access to it, and then saves it with a universal path  
