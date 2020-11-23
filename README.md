@@ -14,6 +14,9 @@ Methods
  the cookie, and sets already_built_response to true.
 + already_built_response if the ivariable already_built_response is set to true,  
  it returns the ivariable: otherwise it sets the ivariable to false and then returns it
++ render(template_name) creates the path to the given template, gets the contents  
+ of the template, creates an ERB file from the contents, and then passes the ERB file  
+ to #render_content.
 # lib/session.rb
 The Session class handles the session cookie. It deserializes or creates it,  
 updates it, allows hash-like access to it, and then saves it with a universal path  
