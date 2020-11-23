@@ -17,6 +17,8 @@ Methods
 + render(template_name) creates the path to the given template, gets the contents  
  of the template, creates an ERB file from the contents, and then passes the ERB file  
  to #render_content.
++ session returns the session ivariable: if the session object doesn't exist, initializes  
+ one and returns that
 # lib/session.rb
 The Session class handles the session cookie. It deserializes or creates it,  
 updates it, allows hash-like access to it, and then saves it with a universal path  
