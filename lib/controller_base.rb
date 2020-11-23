@@ -58,8 +58,12 @@ class ControllerBase
     # I don't understand how right now. Something to do with flexibility and making a gem
     # so when errors pop up in making a gem: this is the problem
     template_path = "views/#{self.class.to_s.underscore}/#{template_name}.html.erb"
+    # read in the contents of the file at the template path
     template_contents = File.read(template_path)
+    # create an ERB file from the path then call binding on the result
+    # so that the context - variable data, methods, etc - is saved with the file
     view = ERB.new(template_contents).result(binding)
+    # call render_content on the ERB file
     render_content(view, "text/html")
   end
 
