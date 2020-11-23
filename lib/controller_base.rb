@@ -69,6 +69,8 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    # if a session ivariable doesn't exist,
+    # initialize and store a new Session object
     @session ||= Session.new(@req)
   end
 
