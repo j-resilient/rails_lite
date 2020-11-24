@@ -77,6 +77,7 @@ class ControllerBase
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(action_name)
     self.send(action_name)
+    # if the dev didn't render a template, render the corresponding template
     render(action_name) unless already_built_response?
   end
 end
