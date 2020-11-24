@@ -16,15 +16,23 @@ class Route
   # use pattern to pull out route params (save for later?)
   # instantiate controller and call controller action
   def run(req, res)
+    # Create a new Regex object and pass in the path regex string
+    # check that the regex path matches the http path
+    # store the results in match_data
     regex = Regexp.new pattern
     match_data = regex.match(req.path)
+
+    # build a route_params hash from match_data
     route_params = {}
     unless match_data.nil?
       match_data.names.each do |param|
         route_params[param] = match_data[param]
       end
     end
-    controller = controller_class.new(req, res, {})
+    # instantiate the correct controller for the given route
+    controller = controller_class.new(req, res, route_params)
+
+    # invokes the given action on the instantiated controller
     controller.invoke_action(action_name)
   end
 end
@@ -44,6 +52,9 @@ class Router
   # evaluate the proc in the context of the instance
   # for syntactic sugar :)
   def draw(&proc)
+    # self refers to the current router instance
+    # so the given block is executed in the context
+    # of the current router instance
     self.instance_eval(&proc)
   end
 
@@ -65,13 +76,16 @@ class Router
 
   # either throw 404 or call run on a matched route
   def run(req, res)
+    # find the first matching route
     route_match = match(req)
+
+    # if route exists, call Route#run
+    # otherwise, return a 404 error
     if route_match
-      route_match.run
+      route_match.run(req, res)
     else
       res.status = 404
       res.write("#{req.path} does not exist.")
-      res.finish
     end
   end
 end
