@@ -1,7 +1,7 @@
 require 'rack'
 require_relative '../lib/controller_base'
 require_relative '../lib/router'
-
+require 'byebug'
 
 $cats = [
   { id: 1, name: "Curie" },
@@ -30,8 +30,12 @@ class Cats2Controller < ControllerBase
   end
 end
 
+# instantiates a router object when the app boots up for the first time
 router = Router.new
+# Router#draw takes these routes and turns them into Route objects
+# which it stores in an ivar
 router.draw do
+  # calls Router#get and passes the three arguments
   get Regexp.new("^/cats$"), Cats2Controller, :index
   get Regexp.new("^/cats/(?<cat_id>\\d+)/statuses$"), StatusesController, :index
 end
