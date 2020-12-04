@@ -3,6 +3,7 @@ require 'active_support/core_ext'
 require 'erb'
 require 'active_support/inflector'
 require_relative './session'
+require_relative './flash'
 
 class ControllerBase
   attr_reader :req, :res, :params
@@ -28,8 +29,9 @@ class ControllerBase
     # then sets @already_built_response so that the controller can't render/redirect twice
     @res.status = 302
     @res.location = url
-    # set the cookie
+    # set the cookies
     session.store_session(res)
+    flash.store_flash(res)
     # set variable to prevent to show that the response has been built - 
     # aka the content has already been rendered
     @already_built_response = true
@@ -44,8 +46,9 @@ class ControllerBase
     @res.content_type = content_type
     # append the content to the body of the response and update Content-Length
     @res.write(content)
-    # set the cookie
+    # set the cookies
     session.store_session(res)
+    flash.store_flash(res)
     # set variable to prevent to show that the response has been built - 
     # aka the content has already been rendered
     @already_built_response = true
@@ -72,6 +75,11 @@ class ControllerBase
     # if a session ivariable doesn't exist,
     # initialize and store a new Session object
     @session ||= Session.new(@req)
+  end
+
+  # method exposing a 'Flash' object
+  def flash
+    @flash ||= Flash.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
