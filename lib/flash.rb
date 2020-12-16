@@ -1,14 +1,19 @@
 require 'json'
 
+# maybe now is meant to be a model or a subclass?
+
 class Flash
+    attr_accessor :now
+
     def initialize(req)
         @cookie = (req.cookies['_rails_lite_app_flash'] ? JSON.parse(req.cookies['_rails_lite_app_flash']) : {}) 
         @flash = (req.cookies['_rails_lite_app_flash'] ? JSON.parse(req.cookies['_rails_lite_app_flash']) : {}) 
+        @now = {}
     end
 
     def [](key)
         key = key.to_s
-        @flash[key]
+        @flash[key] || @now[key]
     end
 
     def []=(key, value)
