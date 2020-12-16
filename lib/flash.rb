@@ -1,7 +1,5 @@
 require 'json'
 
-# maybe now is meant to be a model or a subclass?
-
 class Flash
     attr_accessor :now
 
