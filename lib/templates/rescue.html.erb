@@ -1,0 +1,13 @@
+<%= e.message %>
+<br><br>
+<!-- render the stack trace -->
+<h2>Stack Trace</h2>
+<% e.backtrace.each do |trace| %>
+    <%= trace %> <br>
+<% end %>
+<br><br>
+<!-- print very ugly preview of surrounding code -->
+<h2>Code Preview</h2>
+<% context.each do |line| %>
+    <%= line %> <br>
+<% end %>
