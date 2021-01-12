@@ -68,10 +68,7 @@ class Router
 
   # should return the route that matches this request
   def match(req)
-    routes.find do |route|
-      req.path =~ route.pattern &&
-        req.request_method.downcase.to_sym == route.http_method
-    end
+    routes.find { |route| route.matches?(req) }
   end
 
   # either throw 404 or call run on a matched route
