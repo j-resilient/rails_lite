@@ -1,5 +1,5 @@
 # RailsLite
-The sister project to [my_active_record project](https://github.com/j-resilient/my_active_record), RailsLite is a very  
+The sister project to [my_active_record](https://github.com/j-resilient/my_active_record) project, RailsLite is a very  
 simplified version of Rails.  
 [Specs](https://open.appacademy.io/learn/full-stack-online/rails/rails-lite-part-1)
 ## bin/p01_basic_server.rb
@@ -8,6 +8,10 @@ A warm up to get familiar with Rack.
 ## lib/controller_base.rb
 ControllerBase is our version of ActionController::Base, the class that all  
 Rails Controllers inherit from.
+- Renders templates.
+- Redirects to another page.
+- Returns the actual response to the Rack server.
+- Initializes both the flash and session objects.
 - It provides CSRF by generating a random number and storing it in the cookie and then comparing the authentication token in the cookie with the one the user uploads.
 ## lib/session.rb
 The Session class handles the session cookie. It deserializes or creates it,  
