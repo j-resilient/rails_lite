@@ -28,29 +28,27 @@ class ControllerBase
 
   # Set the response status code and header
   def redirect_to(url)
-    raise "Double render" if already_built_response?
+    before_render
     # there is a Rack method - #redirect - but they explicitly told us not to use it
     # so this code sets the status for the redirect and the new location
     # then sets @already_built_response so that the controller can't render/redirect twice
     @res.status = 302
     @res.location = url
-    # set the cookies
-    session.store_session(res)
-    flash.store_flash(res)
-    # set variable to prevent to show that the response has been built - 
-    # aka the content has already been rendered
-    @already_built_response = true
   end
   
   # Populate the response with content.
   # Set the response's content type to the given type.
   # Raise an error if the developer tries to double render.
   def render_content(content, content_type)
-    raise "Double render" if already_built_response?
+    before_render
     # set the response's content-type header
     @res.content_type = content_type
     # append the content to the body of the response and update Content-Length
     @res.write(content)
+  end
+
+  def before_render
+    raise "Double render" if already_built_response?
     # set the cookies
     session.store_session(res)
     flash.store_flash(res)
