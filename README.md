@@ -29,5 +29,7 @@ and #draw takes a block of routes and calls the corresponding method defined in 
 each block defined beneath #draw - the each block creating all of the HTTP verb methods.
 ## lib/flash.rb
 Manages the flash object, a hash-like object that stores data between HTTP request cycles. Contains both the flash, which lives for the current and next request cycle, and flash.now which is only available for the current request cycle.
+## lib/show_exceptions.rb
+Rack middleware that formats the error page, displaying the exception method, the stack trace, and a section of the code where the exception started.
 ## lib/static.rb
 Rack middleware that makes static assets (images, CSS, etc) available to the client. All resources must be stored in the lib/public directory.
