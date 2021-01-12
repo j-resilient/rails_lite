@@ -13,6 +13,11 @@ class ControllerBase
     # set req and res as instance variables
     @req, @res = req, res
     @params = req.params.merge(route_params)
+
+    
+    # class variable defining whether the controller that
+    # inherits from controller_base called protect_from_forgery
+    @@protect_from_forgery ||= false
   end
 
   # Helper method to alias @already_built_response
@@ -84,30 +89,39 @@ class ControllerBase
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(action_name)
+    if @req.request_method != 'GET' && @@protect_from_forgery
+      check_authenticity_token
+    else
+      form_authenticity_token
+    end
     self.send(action_name)
     # if the dev didn't render a template, render the corresponding template
     render(action_name) unless already_built_response?
   end
 
   def self.protect_from_forgery
-    # validates the authenticity token for all requests other than
-    # GET requests
+    # set protect_from_forgery to true
+    # so check_authenticity_token is actually run
+    @@protect_from_forgery = true
   end
 
   def check_authenticity_token
     # validates the auth token
     # needs to be called from within #invoke_action
+    # !!! but neither params nor req.params HAS an auth_token
+    token = req.cookies['authenticity_token']
+    unless token && token.to_s == params["authenticity_token"] 
+      raise "Invalid authenticity token"
+    end 
   end
 
   def form_authenticity_token
     #  provides the developer with a way to include the CSRF token in a form
     # note that we don't get a database
     # it's going to be stored in the cookie
-    if @auth_token.nil?
-      @auth_token = (req.cookies['authenticity_token'] ? JSON.parse(req.cookies["authenticity_token"]) : self.class.generate_auth_token)
-      @res.set_cookie('authenticity_token', {path: "/", value: @auth_token.to_json})
-    end
-    @auth_token.to_json
+    @auth_token ||= self.class.generate_auth_token
+    @res.set_cookie('authenticity_token', {path: "/", value: @auth_token})
+    @auth_token
   end
 
   def self.generate_auth_token
