@@ -17,7 +17,9 @@ class Static
 
   def return_static_media(req)
     res = Rack::Response.new
-    file_name = "lib#{req.path}"
+
+    dir = File.dirname(__FILE__)
+    file_name = File.join(dir, '..', req.path)
 
     # if file exists, open it and write it to response
     # else 404 error
