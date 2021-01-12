@@ -14,7 +14,6 @@ class ControllerBase
     @req, @res = req, res
     @params = req.params.merge(route_params)
 
-    
     # class variable defining whether the controller that
     # inherits from controller_base called protect_from_forgery
     @@protect_from_forgery ||= false
@@ -60,10 +59,15 @@ class ControllerBase
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
   def render(template_name)
-    # creating the path is supposed to use File.dirname and File.join but
-    # I don't understand how right now. Something to do with flexibility and making a gem
-    # so when errors pop up in making a gem: this is the problem
-    template_path = "views/#{self.class.to_s.underscore}/#{template_name}.html.erb"
+    # __FILE__ is a special variable that gives the filename of this file - 
+    # the one code is executing from right now
+    current_dir = File.dirname(__FILE__)
+    # here we join the directory info with the file name, creating a path
+    # relative to controller_base.rb
+    # template_path = "views/#{self.class.to_s.underscore}/#{template_name}.html.erb"
+    template_path = File.join(
+      current_dir, '..', 'views', 
+      self.class.name.underscore, "#{template_name}.html.erb")
     # read in the contents of the file at the template path
     template_contents = File.read(template_path)
     # create an ERB file from the path then call binding on the result
