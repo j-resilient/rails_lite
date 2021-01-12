@@ -70,7 +70,7 @@ class Router
   def match(req)
     routes.find do |route|
       req.path =~ route.pattern &&
-      req.request_method.downcase.to_sym == route.http_method
+        req.request_method.downcase.to_sym == route.http_method
     end
   end
 
