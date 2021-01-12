@@ -21,8 +21,7 @@ class Flash
     end
 
     def []=(key, value)
-        key = key.to_s
-        @flash[key] = value
+        @flash[key.to_s] = value
     end
 
     def store_flash(res)
